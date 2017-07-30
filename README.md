@@ -175,3 +175,45 @@ sudo a2enmod proxy proxy_ajp proxy_http rewrite deflate headers proxy_balancer p
 sudo service apache2 restart
 ```
 
+For testing purposes I've opened up another PuTTY window and I'm running Isso in the foreground there. In my other PuTTY session I'll create a simple HTML page to test the comment script.
+
+```shell
+cd /var/www/html
+sudo nano comment-test-here.html
+```
+
+Added the following HTML to the page.
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Comment Test Here</title>
+    <meta name="author" content="Jonathan">
+    <meta name="description" content="Simple test page for Isso comments">
+    <meta name="keywords" content="isso, comments, test">
+  </head>
+  <body>
+  
+    <h1>Comment Test Here</h1>
+    <p>There's some text here, then hopefully some comments below.</p>
+    <hr />
+    
+    <script data-isso="//issotest.kyabram.lan/isso/" src="//issotest.kyabram.lan/isso/js/embed.min.js"></script>
+    <section id="isso-thread"></section>
+    
+  </body>
+</html>
+```
+
+It's not working fully, but in the browser console I can see that "embed.min.js" has loaded. However, looking in the console there is the following warning.
+
+```script
+embed.min.js:19 Uncaught ReferenceError: exports is not defined
+    at embed.min.js:19
+    at embed.min.js:19
+(anonymous)	@	embed.min.js:19
+(anonymous)	@	embed.min.js:19
+```
+
