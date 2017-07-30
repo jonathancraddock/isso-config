@@ -110,3 +110,45 @@ ls -lp
 sudo chown isso:root isso.conf
 ```
 
+Command to run isso (based on the path to my test config) is as follows.
+
+```shell
+isso -c /var/lib/isso/isso.conf run
+```
+
+However, initially I'm seeing a database warning, "sqlite3.OperationalError: unable to open database file" and perhaps need to create that manually? Trying the following.
+
+```shell
+cd /var/lib/isso
+sudo touch comments.db
+sudo chown isso:root comments.db
+ls -lp
+-rw-r--r-- 1 isso root   0 Jul 30 20:20 comments.db
+-rw-r--r-- 1 isso root 124 Jul 30 20:11 isso.conf
+```
+
+Different warning now, "sqlite3.OperationalError: attempt to write a readonly database" so perhaps the ownership of the folder is an issue, and presumably it needs a lock file, or other temporary files?
+
+```shell
+cd ..
+sudo chown isso:root -R isso
+
+ls -lp | grep isso
+drwxr-xr-x  2 isso  root    4096 Jul 30 20:20 isso/
+
+ls -lp isso
+-rw-r--r-- 1 isso root   0 Jul 30 20:20 comments.db
+-rw-r--r-- 1 isso root 124 Jul 30 20:11 isso.conf
+```
+
+Same error, because it's running as me? Going to temporarily change the file permissions to test that thought.
+
+```shell
+sudo chmod 777 -R isso
+
+jonathan@issotest:/var/lib$ isso -c /var/lib/isso/isso.conf run
+2017-07-30 20:34:14,138 INFO: connected to http://issotest.kyabram.lan/
+```
+
+And that looks good, but obviously it's bad practice. Going to continue with guide, but noting that these permissions need to be sorted out properly.
+
