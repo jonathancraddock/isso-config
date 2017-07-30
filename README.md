@@ -68,10 +68,21 @@ isso --version
 isso 0.9.9
 ```
 
+The page at https://posativ.org/isso/docs/quickstart/ gives the following introduction.
 
-isso --version
+> Assuming you have successfully installed Isso, here's a quickstart quide that covers the most common setup. 
 
+Step one is creating a configuration file. The command to run Isso specifies the location of the configuration file, so it probably doesn't matter exactly where the file is located. Looking at a list of the package files, see below, rightly or wrongly I'm going to create the config directly in ```/etc/isso.d```. 
 
+```shell
+dpkg-query -L isso
 
+ls -lp /etc/isso.d
+drwxr-xr-x 2 root root 4096 Jun  6  2015 available/
+drwxr-xr-x 2 root root 4096 Jun  6  2015 enabled/
 
+cd /etc/isso.d
+ls -ad .*
+.  ..
+```
 
