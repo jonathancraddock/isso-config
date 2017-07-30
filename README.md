@@ -33,7 +33,7 @@ Take a snapshot of the clean build at this point.
 
 ## Installation
 
-### Attempt 1
+### Using apt-get
 
 Installation guide at https://posativ.org/isso/docs/install/ gives the following information.
 
@@ -216,4 +216,38 @@ embed.min.js:19 Uncaught ReferenceError: exports is not defined
 (anonymous)	@	embed.min.js:19
 (anonymous)	@	embed.min.js:19
 ```
+
+This issue appears to be addressed in this thread: https://github.com/posativ/isso/issues/318
+
+The suggestion from @imphil solved it for my install, taking this JS link https://posativ.org/isso/api/js/embed.min.js and copying it to the web folder. The HTML was modified as follows.
+
+```html
+<!DOCTYPE html> <html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Comment Test Here</title>
+    <meta name="author" content="Jonathan">
+    <meta name="description" content="Simple test page for Isso
+comments">
+    <meta name="keywords" content="isso, comments, test">
+  </head>
+  <body>
+
+    <h1>Comment Test Here</h1>
+    <p>There's some text here, then hopefully some comments below.</p>
+    <hr />
+
+    <script data-isso="//issotest.kyabram.lan/isso/"
+       src="//issotest.kyabram.lan/embed.min.js">
+    </script>
+    <section id="isso-thread"></section>
+
+  </body>
+</html>
+```
+
+The site comments now appear to be working, without any errors or warnings. Two actions arising from the above:
+
+* Permissions need to be set correctly on database folder
+* Isso needs to run in the background, automatically as a service
 
