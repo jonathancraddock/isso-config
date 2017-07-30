@@ -146,9 +146,32 @@ Same error, because it's running as me? Going to temporarily change the file per
 ```shell
 sudo chmod 777 -R isso
 
-jonathan@issotest:/var/lib$ isso -c /var/lib/isso/isso.conf run
+isso -c /var/lib/isso/isso.conf run
 2017-07-30 20:34:14,138 INFO: connected to http://issotest.kyabram.lan/
 ```
 
-And that looks good, but obviously it's bad practice. Going to continue with guide, but noting that these permissions need to be sorted out properly.
+And that looks good, but obviously it's bad practice. Going to continue with guide, but noting that these permissions need to be sorted out properly. Also noted that it's running in the foreground, but presumably that is addressed later.
+
+The guide at https://posativ.org/isso/docs/quickstart/ assumes NGINX as a webserver, but this test VM is running Apache. I'm using the provided config as a starting point and attempting the following in Apache.
+
+```shell
+cd /etc/apache2/sites-available
+sudo nano 000-default.conf
+```
+
+Added the following lines to the Apache config.
+
+```shell
+<Location "/isso">
+    ProxyPass "http://localhost:8080"
+    ProxyPassReverse "http://issotest.kyabram.lan:8080"
+</Location>
+```
+
+Then enabled mod_proxy and restarted Apache.
+
+```shell
+sudo a2enmod proxy proxy_ajp proxy_http rewrite deflate headers proxy_balancer proxy_connect proxy_html
+sudo service apache2 restart
+```
 
