@@ -33,3 +33,45 @@ Take a snapshot of the clean build at this point.
 
 ## Installation
 
+### Attempt 1
+
+Installation guide at https://posativ.org/isso/docs/install/ gives the following information.
+
+> If you are running Debian/Ubuntu, Gentoo, Archlinux or Fedora, you can use Prebuilt Packages.
+
+Based on that, I'm trying the following install via the package manager.
+
+```shell
+clear
+sudo apt-get update
+sudo apt-get install isso
+```
+
+Noted one warning, as follows.
+
+```shell
+Setting up isso (0.9.9-1) ...
+adduser: Warning: The home directory `/var/lib/isso' does not belong to the user you are currently creating.
+```
+
+That folder has been created as follows, currently empty.
+
+```shell
+ls -lp /var/lib/ | grep isso
+drwxr-xr-x  2 isso  root    4096 Jun  6  2015 isso/
+```
+
+Taking note of the info, but continuing with the guide.
+
+```shell
+isso --version
+isso 0.9.9
+```
+
+
+isso --version
+
+
+
+
+
