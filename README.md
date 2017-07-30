@@ -72,7 +72,7 @@ The page at https://posativ.org/isso/docs/quickstart/ gives the following introd
 
 > Assuming you have successfully installed Isso, here's a quickstart quide that covers the most common setup. 
 
-Step one is creating a configuration file. The command to run Isso specifies the location of the configuration file, so it probably doesn't matter exactly where the file is located. Looking at a list of the package files, see below, rightly or wrongly I'm going to create the config directly in ```/etc/isso.d```. 
+Step one is creating a configuration file. The command to run Isso specifies the location of the configuration file, so it probably doesn't matter exactly where the file is located. I'd typically lean towards placing the config file under /etc, but since the default config file suggest putting the database in /var/lib/isso/ I'm going to put the config there too. (Was initially tempted to put it under /etc/isso.d but not sure that feels very good.)
 
 ```shell
 dpkg-query -L isso
@@ -84,5 +84,29 @@ drwxr-xr-x 2 root root 4096 Jun  6  2015 enabled/
 cd /etc/isso.d
 ls -ad .*
 .  ..
+```
+
+Based on the guidance at https://posativ.org/isso/docs/configuration/server/ I'm creating the following basic config file for testing.
+
+```shell
+cd /var/lib/isso
+sudo nano isso.conf
+```
+
+```shell
+[general]
+dbpath = /var/lib/isso/comments.db
+host = http://issotest.kyabram.lan/
+
+[server]
+listen = http://localhost:8080/
+```
+
+Not too sure from the guide, but guessing that file should be owned by the user isso, so updated that below.
+
+```shell
+ls -lp
+-rw-r--r-- 1 root root 124 Jul 30 20:11 isso.conf
+sudo chown isso:root isso.conf
 ```
 
