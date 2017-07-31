@@ -250,6 +250,7 @@ The site comments now appear to be working, without any errors or warnings. Two 
 
 * Permissions need to be set correctly on database folder
 * Isso needs to run in the background, automatically as a service
+* Bug in the 0.9.9 Debian package, fixed by manually copying the embed JS script
 
 ---
 
@@ -281,4 +282,49 @@ sudo chown isso:isso -R isso
 sudo chmod 660 -R isso
 ```
 
-Logging out and back in to pick up group changes.
+Logging out and back in to pick up group changes. But, with that permission change, back to an error, so trying 774 instead.
+
+```shell
+isso -c /var/lib/isso/isso.conf run
+2017-07-31 10:32:11,676 ERROR: No website(s) configured, Isso won't work.
+
+cd /var/lib
+sudo chmod 774 -R isso
+
+isso -c /var/lib/isso/isso.conf run
+2017-07-31 10:33:32,983 INFO: connected to http://issotest.kyabram.lan/
+```
+
+Seems ok, so going with that for now.
+
+Created a sub-folder, /var/www/html/blog, and added a new HTML file in there. Confirmed a unique set of comments are pulled through to here. Before any comments are added you see the following message in the browser console. Presume this is due to attempting to pull a non-existant thread into that new page?
+
+```script
+GET http://issotest.kyabram.lan/isso/?uri=%2Fblog%2Fsub-folder.html&nested_limit=5 404 (NOT FOUND)
+```
+
+The warning disappears as soon as at least one comment is added.
+
+The configuration guide points to this init file to run Isso as a service: https://github.com/jgraichen/debian-isso/blob/master/debian/isso.init
+
+Looking in /etc/init.d I note that the above script is already in place, with X attribute, and just needs to be automatically run on startup. Looks like the path to the config file is stored in an environment variable, $ISSO_CONF_FILES_DIR, and also I probably should have used a ".cfg" extension as that's been hardcoded in the script.
+
+> I also take back my earlier comment about it not mattering where the config file goes. Looks like my earlier instinct to put it in /etc/isso.d was closer to being correct. The default folder looks like its supposed to be: /etc/isso.d/enabled
+
+I'll move the config ini file to /etc/isso.d/enabled from it's current location at /var/lib/isso.
+
+```script
+sudo mv /var/lib/isso/isso.conf /etc/isso.d/enabled/isso.cfg
+sudo nano sudo nano /etc/default/isso
+
+# Use "yes" (without quotes) to make /etc/init.d/isso start the Isso service.
+# The Gunicon WSGI server is required.
+START_DAEMON=yes
+# IP address and TCP port used by Gunicorn
+ISSO_ADDRESS_PORT=127.0.0.1:8000
+# Path to load isso configuration files from.
+ISSO_CONF_FILES_DIR="/etc/isso.d/enabled"
+
+sudo update-rc.d isso defaults
+sudo reboot now
+```
