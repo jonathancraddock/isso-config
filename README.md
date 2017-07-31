@@ -251,3 +251,34 @@ The site comments now appear to be working, without any errors or warnings. Two 
 * Permissions need to be set correctly on database folder
 * Isso needs to run in the background, automatically as a service
 
+---
+
+### Continued 31/7/2017
+
+Footnote: With isso running in the foreground I tried adding a reply to an existing comment from yesterday. The following output is from the PuTTY session.
+
+```shell
+isso -c /var/lib/isso/isso.conf run
+2017-07-31 10:14:19,526 INFO: connected to http://issotest.kyabram.lan/
+2017-07-31 10:15:42,198 INFO: comment created: {"website": "https://duckduckgo.com", "author": "Mulder", "parent": 1, "created": 1501492542.179662, "text": "<p>I like your comment!</p>", "dislikes": 0, "modified": null, "mode": 1, "hash": "*************", "id": 3, "likes": 0}
+```
+
+Going to take a look at the permissions on /var/lib/isso and noted that for reasons unknown I didn't use the "isso" group yesterday. Trying the following.
+
+```shell
+cat /etc/group
+
+[...]
+isso:x:119:
+
+sudo usermod -a -G isso jonathan
+
+cat /etc/group | grep isso
+isso:x:119:jonathan
+
+cd /var/lib
+sudo chown isso:isso -R isso
+sudo chmod 660 -R isso
+```
+
+Logging out and back in to pick up group changes.
