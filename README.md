@@ -299,7 +299,7 @@ Seems ok, so going with that for now.
 
 Created a sub-folder, /var/www/html/blog, and added a new HTML file in there. Confirmed a unique set of comments are pulled through to here. Before any comments are added you see the following message in the browser console. Presume this is due to attempting to pull a non-existant thread into that new page?
 
-```script
+```shell
 GET http://issotest.kyabram.lan/isso/?uri=%2Fblog%2Fsub-folder.html&nested_limit=5 404 (NOT FOUND)
 ```
 
@@ -313,7 +313,7 @@ Looking in /etc/init.d I note that the above script is already in place, with X 
 
 I'll move the config ini file to /etc/isso.d/enabled from it's current location at /var/lib/isso.
 
-```script
+```shell
 sudo mv /var/lib/isso/isso.conf /etc/isso.d/enabled/isso.cfg
 sudo nano sudo nano /etc/default/isso
 
@@ -328,3 +328,46 @@ ISSO_CONF_FILES_DIR="/etc/isso.d/enabled"
 sudo update-rc.d isso defaults
 sudo reboot now
 ```
+
+And... that's not working. But, confirmed that the setup still works ok if manually run with the following.
+
+```shell
+isso -c /etc/isso.d/enabled/isso.cfg run
+```
+
+Looking at the syslog, I see the following.
+
+```shell
+Jul 31 14:50:20 issotest systemd[1]: Listening on isso socket.
+Jul 31 14:50:20 issotest systemd[1]: Started isso commenting system.
+Jul 31 14:50:20 issotest gunicorn[1623]: 2017-07-31 14:50:20,964 WARNING: unable to dispatch u'/etc/isso.d/enabled/isso.cfg', no 'name' set
+Jul 31 14:50:20 issotest gunicorn[1623]: 2017-07-31 14:50:20,966 WARNING: unable to dispatch u'/etc/isso.d/enabled/isso.cfg', no 'name' set
+```
+
+Modified the isso.cfg file as follows. (Noted that the guide at https://posativ.org/isso/docs/configuration/server/ says that name is not used unless dispatching multiple sites?)
+
+```shell
+; Basic config on "issotest" local test VM
+; Created - 30/7/2017
+; ^- added general and server config
+
+[general]
+dbpath = /var/lib/isso/comments.db
+host = http://issotest.kyabram.lan/
+name = isso
+
+[server]
+listen = http://localhost:8080/
+```
+
+Now looking at the tail of syslog I see the following.
+
+```shell
+Jul 31 14:59:02 issotest systemd[1]: Listening on isso socket.
+Jul 31 14:59:02 issotest systemd[1]: Started isso commenting system.
+Jul 31 14:59:02 issotest gunicorn[1718]: 2017-07-31 14:59:02,651 INFO: connected to http://issotest.kyabram.lan/
+Jul 31 14:59:02 issotest gunicorn[1718]: 2017-07-31 14:59:02,675 INFO: connected to http://issotest.kyabram.lan/
+```
+
+I'm unclear why that final line is repeated, and although it sounds promising, the comments are still not working.
+
