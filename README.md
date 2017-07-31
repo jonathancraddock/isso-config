@@ -440,3 +440,9 @@ Had to reload the web page a couple of times (warnings in console) but that's pr
 Going to leave this for now and carry out further testing later. :-)
 
 ---
+
+Installed phpLiteAdmin to have a look at the database, but won't open the file. Trying the following.
+
+```shell
+apt-get install php7.0-sqlite3
+```
