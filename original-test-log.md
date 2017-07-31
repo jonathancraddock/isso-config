@@ -316,7 +316,7 @@ I'll move the config ini file to /etc/isso.d/enabled from it's current location 
 
 ```shell
 sudo mv /var/lib/isso/isso.conf /etc/isso.d/enabled/isso.cfg
-sudo nano sudo nano /etc/default/isso
+sudo nano /etc/default/isso
 
 # Use "yes" (without quotes) to make /etc/init.d/isso start the Isso service.
 # The Gunicon WSGI server is required.
@@ -447,3 +447,5 @@ Installed phpLiteAdmin to have a look at the database, but won't open the file. 
 ```shell
 apt-get install php7.0-sqlite3
 ```
+
+Still not working, and probably a permissions problem. I'm going to revert this snapshot and repeat the entire install, hopefully more smoothly and will sort out my phpLiteAdmin install during that process...
