@@ -369,5 +369,74 @@ Jul 31 14:59:02 issotest gunicorn[1718]: 2017-07-31 14:59:02,651 INFO: connected
 Jul 31 14:59:02 issotest gunicorn[1718]: 2017-07-31 14:59:02,675 INFO: connected to http://issotest.kyabram.lan/
 ```
 
-I'm unclear why that final line is repeated, and although it sounds promising, the comments are still not working.
+I'm unclear why that final line is repeated, and although it sounds promising, the comments are still not working. Putting that aside for now, I'm going to try this approach:
 
+https://stiobhart.net/2017-02-24-isso-comments/
+
+...using systemd.
+
+```shell
+sudo nano /etc/systemd/system/isso.service
+```
+
+Trying the following settings.
+
+```shell
+[Unit]
+Description=Isso Comments
+After=network.target
+
+[Service]
+User=isso
+Group=www-data
+WorkingDirectory=/var/lib/isso
+LimitNOFILE=8192
+ExecStart=isso -c /etc/isso.d/enabled/isso.cfg run
+Restart=on-failure
+StartLimitInterval=600
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then enable the service.
+
+```shell
+sudo chmod 755 isso.service
+sudo systemctl enable isso.service
+sudo systemctl start isso.service
+```
+
+And... that's going nowhere either and don't know systemd well enough to have any idea what's wrong with it! So, going to try this approach with "supervisor" that sounds much nicer.
+
+http://blog.pythonity.com/how-to-use-isso.html
+
+```shell
+sudo apt-get install supervisor
+sudo nano /etc/supervisor/conf.d/isso.conf
+
+[program:isso]
+command = isso -c /etc/isso.d/enabled/isso.cfg run
+user = isso
+autostart = true
+autorestart = true
+stdout_logfile = /var/lib/isso/supervisor.log
+redirect_stderr = true
+environment = LANG=en_US.UTF-8,LC_ALL=en_US.UTF-8
+
+sudo supervisorctl reread && sudo supervisorctl update
+
+sudo supervisorctl start isso
+```
+
+Confirmed that the comments are now loading correctly on my test pages, so need to reboot and see if it runs automatically?
+
+```shell
+sudo reboot now
+```
+
+Had to reload the web page a couple of times (warnings in console) but that's probably a cache issue in chrome. Certainly seems to be working ok now.
+
+Going to leave this for now and carry out further testing later. :-)
+
+---
