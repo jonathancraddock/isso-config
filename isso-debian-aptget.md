@@ -48,6 +48,7 @@ Log back in and install phpLiteAdmin.
 
 ```shell
 $ clear
+$ apt-get install php7.0-sqlite3
 $ cd /var/www/html
 $ sudo apt install unzip
 $ wget https://bitbucket.org/phpliteadmin/public/downloads/phpLiteAdmin_v1-9-7-1.zip
@@ -62,6 +63,27 @@ Edit the database path.
 ```shell
 //directory relative to this file to search for databases
 $directory = '../isso';
+```
+
+Update php.ini.
+
+```shell
+$ cd /etc/php/7.0/apache2
+$ sudo nano php.ini
+```
+
+And, uncomment the following two lines.
+
+```shell
+extension=php_pdo_sqlite.dll
+[...]
+extension=php_sqlite3.dll
+```
+
+Then restart Apache.
+
+```shell
+$ sudo service apache2 restart
 ```
 
 Visited http://issotest.kyabram.lan/phpliteadmin.php and confirmed that I can administer databases in that folder.
@@ -215,5 +237,10 @@ $ isso -c /var/www/isso/isso.cfg run
 ```
 
 ### Run Isso as a Service
+
+On the first test run, the **comments.db** file was created as me, see below.
+
+```shell
+-rw-r--r-- 1 jonathan jonathan 6144 Aug  2 17:37 comments.db
 
 
