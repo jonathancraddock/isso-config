@@ -339,5 +339,21 @@ And on the client, this is the **embed** within the site HTML.
 <section id="isso-thread"></section>
 ```
 
-## Conclusion
+Left a few comments and confirmed receipt of moderation emails. Noted that the URIs to accept or delete the comment don't take into account that I have Isso setup in a folder, rather than as a sub-domain. See example below.
 
+```shell
+ http://issotest.kyabram.lan/id/6/activate/************
+ ```
+ 
+ The link above fails with a 404, and has to be modified as below.
+ 
+ ```shell
+  http://issotest.kyabram.lan/isso/id/6/activate/************
+  ```
+
+## Actions
+
+Definitely working ok in this test environment. Couple of points I need to look at further:
+
+* Permissions and ownership  
+* Can I customise the moderation URIs?
