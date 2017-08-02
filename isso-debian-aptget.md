@@ -294,6 +294,7 @@ Following basic testing so far, I've arrived at the following config. First, on 
 [general]
 dbpath = /var/www/isso/comments.db
 host = http://issotest.kyabram.lan/
+notify = smtp
 
 [server]
 listen = http://localhost:8080/
@@ -301,6 +302,16 @@ listen = http://localhost:8080/
 [moderation]
 enabled = true
 purge-after = 14d
+
+[smtp]
+username = *****
+password = *****
+host = smtp.mailgun.org
+port = 587
+security = starttls
+to = *****
+from = "Isso Test" <isso@issotest.kyabram.lan>
+timeout = 10
 
 [guard]
 enabled = true
