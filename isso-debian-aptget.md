@@ -199,6 +199,21 @@ $ isso -c /var/www/isso/isso.cfg run
 2017-08-02 17:33:16,623 INFO: connected to http://issotest.kyabram.lan/
 ```
 
-Test in a browser with: 
+### Test in a Browser
 
-Exit with <kbd>Ctrl</kbd>+<kbd>C</kbd> and complete the Apache config and create a test page.
+In my config, I visited http://issotest.kyabram.lan/comment-test-here.html and added a single comment.
+
+![Demo screenshot of test comment](https://jonathancraddock.com/images/test-comment-1.png)
+
+At the command line (isso currently running in foreground) you see the following output.
+
+```shell
+$ isso -c /var/www/isso/isso.cfg run
+2017-08-02 17:36:22,422 INFO: connected to http://issotest.kyabram.lan/
+2017-08-02 17:37:07,456 INFO: new thread 1: Comment Test Here
+2017-08-02 17:37:07,479 INFO: comment created: {"website": null, "author": "Arthur Pewty", "parent": null, "created": 1501691827.457397, "text": "<p>First comment on new test build.</p>", "dislikes": 0, "modified": null, "mode": 1, "hash": "9f0076fd038d", "id": 1, "likes": 0}
+```
+
+### Run Isso as a Service
+
+
