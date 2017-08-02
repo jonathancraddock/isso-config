@@ -129,15 +129,16 @@ Exit with <kbd>Ctrl</kbd>+<kbd>C</kbd> and complete the Apache config and create
 
 ### Apache
 
-Enable proxy with the following command.
+Enable support for a reverse proxy with the following command, then edit the site config.
 
 ```shell
 $ sudo a2enmod proxy proxy_ajp proxy_http rewrite deflate headers proxy_balancer proxy_connect proxy_html
 $ cd /etc/apache2/sites-available
+
 $ sudo nano 000-default.conf
 ```
 
-Append the following lines to the end of the configuration.
+Append the following lines to the end of the configuration file.
 
 ```shell
 <Location "/isso">
@@ -162,6 +163,8 @@ $ sudo nano comment-test-here.html
 ```
 
 Use the following html file, or take it from here: [comment-test-here.html](comment-test-here.html)
+
+> Note that the install guide at https://posativ.org/isso/docs/install/ indicates that the embed.min.js file would be served from /isso/js/embed.min.js, but although I can see that file being served, it's not working in this version of the package. (0.9.9) See section below for a workaround. More info on this issue in [Original Install Activity Log](original-test-log.md).
 
 ```html
 <!DOCTYPE html> <html>
@@ -204,7 +207,7 @@ comments">
 
 ### Implement "Uncaught ReferenceError" workaround
 
-Copy the following javascript file into /var/www/html/js.
+From what I've seen in various comments, this appears to be an issue with the Debian package. Copy the following javascript file into /var/www/html/js.
 
 ```shell
 $ mkdir /var/www/html/js
@@ -236,11 +239,48 @@ $ isso -c /var/www/isso/isso.cfg run
 2017-08-02 17:37:07,479 INFO: comment created: {"website": null, "author": "Arthur Pewty", "parent": null, "created": 1501691827.457397, "text": "<p>First comment on new test build.</p>", "dislikes": 0, "modified": null, "mode": 1, "hash": "9f0076fd038d", "id": 1, "likes": 0}
 ```
 
-### Run Isso as a Service
+### Fix Database Permissions
 
-On the first test run, the **comments.db** file was created as me, see below.
+On first running Isso, the **comments.db** file was created as me. Updating that below.
 
 ```shell
 -rw-r--r-- 1 jonathan jonathan 6144 Aug  2 17:37 comments.db
 
+$ sudo chown isso:www-data comments.db
+$ sudo chmod 774 comments.db
+```
+
+### Isso as a Service using Supervisor
+
+In my earlier tests I was getting nowhere with init.d and systemd, and eventually found this solution based on **supervisor** at http://blog.pythonity.com/how-to-use-isso.html.
+
+```shell
+$ sudo apt-get install supervisor
+$ sudo nano /etc/supervisor/conf.d/isso.conf
+```
+
+Add the following lines to the config.
+
+```shell
+[program:isso]
+command = isso -c /etc/isso.d/enabled/isso.cfg run
+user = isso
+autostart = true
+autorestart = true
+stdout_logfile = /var/lib/isso/supervisor.log
+redirect_stderr = true
+environment = LANG=en_US.UTF-8,LC_ALL=en_US.UTF-8
+
+sudo supervisorctl reread && sudo supervisorctl update
+
+sudo supervisorctl start isso
+```
+
+Reboot the server to confirm the service is started on boot.
+
+```shell
+sudo reboot now
+```
+
+## Conclusion
 
