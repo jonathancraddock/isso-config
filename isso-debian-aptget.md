@@ -355,5 +355,20 @@ Left a few comments and confirmed receipt of moderation emails. Noted that the U
 
 Definitely working ok in this test environment. Couple of points I need to look at further:
 
-* Permissions and ownership  
-* Can I customise the moderation URIs?
+* File and folder permissions and ownership  
+* ~~Can I customise the moderation URIs?~~
+
+### Updates
+
+Regarding the moderation URIs, I've modified the Apache config and the following appears to work.
+
+```shell
+<Location "/isso">
+    ProxyPass "http://localhost:8080"
+    ProxyPassReverse "http://issotest.kyabram.lan:8080"
+    RequestHeader set X-SCRIPT-NAME /isso
+    RequestHeader set X-SCHEME http
+</Location>
+```
+
+The original version didn't include the RequestHeader settings.
