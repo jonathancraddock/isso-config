@@ -1,6 +1,6 @@
 # Introduction
 
-This procedure is based on the activity log saved here: [Original Install Activity Log](original-test-log.md). It's intended as a guide/checklist for my future reference, but currently not tested on a production server, only on a test VM. The permissions and ownerships described below are too loose for a production environment - I just want to see how it works.
+This procedure is based on the activity log I originally saved here: [Original Install Activity Log](original-test-log.md). It's intended as a guide/checklist for my future reference, but currently not tested on a production server, only on a test VM. The permissions and ownerships described below are probably too loose for a production environment - I just want to see how it works.
 
 ## Description of server
 
@@ -21,6 +21,7 @@ No updates pending now, so installing isso.
 ```shell
 $ clear
 $ sudo apt-get install isso
+
 $ isso --version
 isso 0.9.9
 ```
@@ -65,7 +66,7 @@ Edit the database path.
 $directory = '../isso';
 ```
 
-Update php.ini.
+Edit php.ini.
 
 ```shell
 $ cd /etc/php/7.0/apache2
@@ -263,23 +264,68 @@ Add the following lines to the config.
 
 ```shell
 [program:isso]
-command = isso -c /etc/isso.d/enabled/isso.cfg run
+command = isso -c /var/www/isso/isso.cfg run
 user = isso
 autostart = true
 autorestart = true
 stdout_logfile = /var/lib/isso/supervisor.log
 redirect_stderr = true
 environment = LANG=en_US.UTF-8,LC_ALL=en_US.UTF-8
+```
 
+Now start the service as follows.
+
+```shell
 sudo supervisorctl reread && sudo supervisorctl update
-
 sudo supervisorctl start isso
 ```
 
-Reboot the server to confirm the service is started on boot.
+Test that comments are working as expected. Then reboot the server to confirm the service is started on boot.
 
 ```shell
 sudo reboot now
+```
+
+### Additional Client/Server Configuration
+
+Following basic testing so far, I've arrived at the following config. First, on the server. This is the content of **/var/www/isso/isso.cfg**.
+
+```shell
+[general]
+dbpath = /var/www/isso/comments.db
+host = http://issotest.kyabram.lan/
+
+[server]
+listen = http://localhost:8080/
+
+[moderation]
+enabled = true
+purge-after = 14d
+
+[guard]
+enabled = true
+ratelimit = 2
+direct-reply = 3
+reply-to-self = false
+require-author = true
+require-email = true
+
+[markup]
+options = strikethrough
+allowed-elements = strong, em, br, p, s, strike
+```
+
+And on the client, this is the **embed** within the site HTML.
+
+```html
+<script data-isso="//issotest.kyabram.lan/isso/"
+    data-isso-reply-to-self="false"
+    data-isso-require-author="true"
+    data-isso-require-email="true"
+    data-isso-vote="true"
+    src="//issotest.kyabram.lan/js/embed.min.js">
+</script>
+<section id="isso-thread"></section>
 ```
 
 ## Conclusion
