@@ -1,8 +1,6 @@
 # isso-config
 
-Notes and config relating to a test install of the self-hosted commenting solution, Isso.
-
-If you're looking for my notes on the installation, this is probably what you want: [Installation Steps](isso-debian-aptget.md)
+Notes and config relating to a test install of the self-hosted commenting solution, Isso. If you're looking for my notes on the installation, this is probably what you want: [Installation Steps](isso-debian-aptget.md)
 
 ## Documents
 
@@ -22,7 +20,10 @@ This is based on the activity log, but written as a procedure that I can refer b
 
 ## Resources
 
-Website: https://posativ.org/isso/  
-Install Guide: https://posativ.org/isso/docs/install/#  
-GitHub: https://github.com/posativ/isso  
-Use of "Supervisor": http://blog.pythonity.com/how-to-use-isso.html  
+* Website: https://posativ.org/isso/  
+
+* Install Guide: https://posativ.org/isso/docs/install/#  
+
+* GitHub: https://github.com/posativ/isso  
+
+* Use of "Supervisor": http://blog.pythonity.com/how-to-use-isso.html  
