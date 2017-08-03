@@ -1,10 +1,12 @@
 # Introduction
 
-This procedure is based on the activity log I originally saved here: [Original Install Activity Log](original-test-log.md). It's intended as a guide/checklist for my future reference, but currently not tested on a production server, only on a test VM. The permissions and ownerships described below are probably too loose for a production environment - I just want to see how it works.
+This procedure is based on the activity log I originally saved here: [Original Install Activity Log](original-test-log.md). It's intended as a guide/checklist for my future reference, but currently not tested on a production server, only on a test VM. The permissions and ownerships described below are probably too loose for a production environment - for now, I just want to see how it works.
 
 ## Description of server
 
 After the actions logged in the document linked above, I reverted to a snapshot of a brand new, clean Ubuntu 16.04 build. It's a basic LAMP server with SSH, and nothing else installed. For the purposes of my testing it's on my home network, AKA **kyabram.lan** and the machine name is **issotest**, hence any later references to **issotest.kyabram.lan**, etc.
+
+I want to install Isso in a folder, not as a sub-domain, and I'm using **.../isso** for this purpose.
 
 ## Install Isso Using Package Manager
 
@@ -13,7 +15,7 @@ Check for updates.
 ```shell
 $ sudo apt-get update
 $ sudo apt-get upgrade
-$ sudo apt-get reboot now
+$ sudo reboot now
 ```
 
 No updates pending now, so installing isso.
@@ -145,6 +147,8 @@ Append the following lines to the end of the configuration file.
 <Location "/isso">
     ProxyPass "http://localhost:8080"
     ProxyPassReverse "http://issotest.kyabram.lan:8080"
+    RequestHeader set X-SCRIPT-NAME /isso
+    RequestHeader set X-SCHEME http
 </Location>
 ```
 
@@ -165,7 +169,7 @@ $ sudo nano comment-test-here.html
 
 Use the following html file, or take it from here: [comment-test-here.html](comment-test-here.html)
 
-> Note that the install guide at https://posativ.org/isso/docs/install/ indicates that the embed.min.js file would be served from /isso/js/embed.min.js, but although I can see that file being served, it's not working in this version of the package. (0.9.9) See section below for a workaround. More info on this issue in [Original Install Activity Log](original-test-log.md).
+> Note that the install guide at https://posativ.org/isso/docs/install/ indicates that the embed.min.js file would be served from /isso/js/embed.min.js, but although I can see that file being served, it's not working in this version of the package. (0.9.9) See section below for a workaround. More info on this issue in [Original Install Activity Log](original-test-log.md). Not a fault with Isso, but I believe it has something to do with the build of this Debian package.
 
 ```html
 <!DOCTYPE html> <html>
@@ -208,7 +212,7 @@ comments">
 
 ### Implement "Uncaught ReferenceError" workaround
 
-From what I've seen in various comments, this appears to be an issue with the Debian package. Copy the following javascript file into /var/www/html/js.
+From what I've seen in various comments, this appears to be an issue with the Debian package, but there is a simple workaround. Copy the **embed.min.js** javascript file into /var/www/html/js.
 
 ```shell
 $ mkdir /var/www/html/js
@@ -288,7 +292,7 @@ sudo reboot now
 
 ### Additional Client/Server Configuration
 
-Following basic testing so far, I've arrived at the following config. First, on the server. This is the content of **/var/www/isso/isso.cfg**.
+Following basic testing so far, I've arrived at the following config. First, on the server. In my test environment, this is the content of **/var/www/isso/isso.cfg**.
 
 ```shell
 [general]
@@ -339,36 +343,10 @@ And on the client, this is the **embed** within the site HTML.
 <section id="isso-thread"></section>
 ```
 
-Left a few comments and confirmed receipt of moderation emails. Noted that the URIs to accept or delete the comment don't take into account that I have Isso setup in a folder, rather than as a sub-domain. See example below.
-
-```shell
- http://issotest.kyabram.lan/id/6/activate/************
- ```
- 
- The link above fails with a 404, and has to be modified as below.
- 
- ```shell
-  http://issotest.kyabram.lan/isso/id/6/activate/************
-  ```
+Left a few comments and confirmed receipt of moderation emails. These allow comments to be moderated or deleted via a unique URI. It's also possible to moderate the comments in phpLiteAdmin, where the "mode" field in the comments table is "1" for accepted, "2" for unmoderated (hidden).
 
 ## Actions
 
-Definitely working ok in this test environment. Couple of points I need to look at further:
+Definitely all seems to be working ok in this test environment. Actions outstanding:
 
-* File and folder permissions and ownership  
-* ~~Can I customise the moderation URIs?~~
-
-### Updates
-
-Regarding the moderation URIs, I've modified the Apache config and the following appears to work.
-
-```shell
-<Location "/isso">
-    ProxyPass "http://localhost:8080"
-    ProxyPassReverse "http://issotest.kyabram.lan:8080"
-    RequestHeader set X-SCRIPT-NAME /isso
-    RequestHeader set X-SCHEME http
-</Location>
-```
-
-The original version didn't include the RequestHeader settings.
+* Rethink file and folder permissions and ownership  
