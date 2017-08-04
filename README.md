@@ -12,7 +12,7 @@ This is based on the activity log, but written as a procedure that I can refer b
 
 ## Files
 
-* Isso server config file: [isso.cfg](isso.cfg)  
+* Isso server config file: [isso.cfg](isso.conf)  
 
 * HTML test file: [comment-test-here.html](comment-test-here.html)  
 
