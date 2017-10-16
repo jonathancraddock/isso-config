@@ -1,6 +1,8 @@
 # Introduction
 
-This procedure is based on the activity log I originally saved here: [Original Install Activity Log](original-test-log.md). It's intended as a guide/checklist for my future reference, but currently not tested on a production server, only on a test VM. The permissions and ownerships described below are probably too loose for a production environment - for now, I just want to see how it works.
+This procedure is based on the activity log I originally saved here: [Original Install Activity Log](original-test-log.md). It's intended as a guide/checklist for my future reference, but currently not tested on a production server, only on a test VM.
+
+> **The permissions and ownerships described below are too loose for a production environment - for now, I just want to see how it works.**
 
 ## Description of server
 
