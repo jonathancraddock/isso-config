@@ -57,7 +57,7 @@ $ apt-get install php7.0-sqlite3
 $ cd /var/www/html
 $ sudo apt install unzip
 $ wget https://bitbucket.org/phpliteadmin/public/downloads/phpLiteAdmin_v1-9-7-1.zip
-$ unzip phpliteAdmin_v1-9-5.zip
+$ unzip phpLiteAdmin_v1-9-7-1.zip
 $ rm phpLiteAdmin_v1-9-7-1.zip
 $ mv phpliteadmin.config.sample.php phpliteadmin.config.php
 $ nano phpliteadmin.config.php
